@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\sata\\Desktop\\tms-qiyas\\tms-qiyas\\TmsCore\\TmsCore.csproj": {}
+    "C:\\Users\\sata\\Desktop\\tms-qiyas\\tms-qiyas\\tmscore\\TmsCore.csproj": {}
   },
   "projects": {
-    "C:\\Users\\sata\\Desktop\\tms-qiyas\\tms-qiyas\\TmsCore\\TmsCore.csproj": {
+    "C:\\Users\\sata\\Desktop\\tms-qiyas\\tms-qiyas\\tmscore\\TmsCore.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\sata\\Desktop\\tms-qiyas\\tms-qiyas\\TmsCore\\TmsCore.csproj",
+        "projectUniqueName": "C:\\Users\\sata\\Desktop\\tms-qiyas\\tms-qiyas\\tmscore\\TmsCore.csproj",
         "projectName": "TmsCore",
-        "projectPath": "C:\\Users\\sata\\Desktop\\tms-qiyas\\tms-qiyas\\TmsCore\\TmsCore.csproj",
+        "projectPath": "C:\\Users\\sata\\Desktop\\tms-qiyas\\tms-qiyas\\tmscore\\TmsCore.csproj",
         "packagesPath": "C:\\Users\\sata\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\sata\\Desktop\\tms-qiyas\\tms-qiyas\\TmsCore\\obj\\",
+        "outputPath": "C:\\Users\\sata\\Desktop\\tms-qiyas\\tms-qiyas\\tmscore\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
