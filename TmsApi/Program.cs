@@ -1,14 +1,19 @@
 using Microsoft.AspNetCore.Authentication;
+using Scalar.AspNetCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services
     .AddAuthentication("Training")
     .AddScheme<AuthenticationSchemeOptions, TrainingAuthHandler>("Training", null);
-
 builder.Services.AddAuthorization();
+builder.Services.AddProblemDetails();
+builder.Services.AddControllers();
+builder.Services.AddOpenApi();
+
 builder.Services.AddSingleton<EnrollmentWorker>();
-builder.Services.AddScoped<IEnrollmentService, EnrollmentService>();
+builder.Services.AddSingleton<IEnrollmentService, EnrollmentService>();
+
 builder.Services.AddOptions<PaymentOptions>()
     .BindConfiguration("Payments")
     .ValidateDataAnnotations()
@@ -22,10 +27,20 @@ builder.Host.UseDefaultServiceProvider(options =>
 
 var app = builder.Build();
 
-app.UseRouting();
+app.UseMiddleware<RequestLoggingMiddleware>();
 
+app.UseExceptionHandler();
+app.UseHttpsRedirection();
+app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
+app.MapControllers();
+
+if (app.Environment.IsDevelopment())
+{
+    app.MapOpenApi();
+    app.MapScalarApiReference();
+}
 
 app.MapGet("/api/enrollments/worker-smoke", (EnrollmentWorker worker) =>
 {
@@ -40,5 +55,15 @@ app.MapGet("/api/assessments/results", () => Results.Ok(new
     letterGrade = "A"
 }))
 .RequireAuthorization();
+
+app.MapGet("/api/error", () =>
+{
+    throw new TmsDatabaseException("Simulated database failure for ProblemDetails testing");
+});
+
+app.MapGet("/api/error", () =>
+{
+    throw new TmsDatabaseException("Simulated database failure for ProblemDetails testing");
+});
 
 app.Run();
