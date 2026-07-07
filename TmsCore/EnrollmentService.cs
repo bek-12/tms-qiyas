@@ -9,7 +9,7 @@ public class EnrollmentService
             throw new ArgumentNullException(nameof(course));
 
         if (course.EnrolledCount >= course.Capacity)
-            throw new InvalidOperationException($"Course {course.Code} has reached maximum capacity.");
+            throw new CapacityReachedException(course.Code);
 
         string standing = student.GPA switch
         {
