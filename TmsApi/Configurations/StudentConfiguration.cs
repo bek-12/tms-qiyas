@@ -20,5 +20,11 @@ public class StudentConfiguration : IEntityTypeConfiguration<Student>
         builder.Property(s => s.Name)
             .IsRequired()
             .HasMaxLength(200);
+
+        builder.Property(s => s.Version).IsRowVersion();
+
+        builder.Property<DateTime>("LastUpdated");
+
+        builder.HasQueryFilter(s => !s.IsDeleted);
     }
 }

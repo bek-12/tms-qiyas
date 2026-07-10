@@ -41,4 +41,51 @@ public class ReportsController(TmsDbContext context) : ControllerBase
 
         return Ok(topCourses);
     }
+
+    // Part A: intentional N+1 - for learning only
+    [HttpGet("n-plus-one-demo")]
+    public async Task<IActionResult> NPlusOneDemo(CancellationToken cancellationToken)
+    {
+        var students = await context.Students.AsNoTracking().ToListAsync(cancellationToken);
+
+        var results = new List<string>();
+        foreach (var s in students)
+        {
+            var count = await context.Enrollments
+                .AsNoTracking()
+                .CountAsync(e => e.StudentId == s.Id, cancellationToken);
+
+            results.Add($"{s.Name}: {count} enrollments");
+        }
+
+        return Ok(results);
+    }
+
+    // Part B: fixed with a single shaped query
+    [HttpGet("enrollment-counts")]
+    public async Task<IActionResult> EnrollmentCounts(CancellationToken cancellationToken)
+    {
+        var report = await context.Students
+            .AsNoTracking()
+            .Select(s => new
+            {
+                s.Name,
+                EnrollmentCount = s.Enrollments.Count
+            })
+            .ToListAsync(cancellationToken);
+
+        return Ok(report);
+    }
+     // POST /api/reports/archive-old-enrollments
+    [HttpPost("archive-old-enrollments")]
+    public async Task<IActionResult> ArchiveOldEnrollments(CancellationToken cancellationToken)
+    {
+        var cutoff = DateTime.UtcNow.AddYears(-1);
+
+        var affected = await context.Enrollments
+            .Where(e => e.EnrolledAt < cutoff && !e.IsArchived)
+            .ExecuteUpdateAsync(setters => setters.SetProperty(e => e.IsArchived, true), cancellationToken);
+
+        return Ok(new { archivedCount = affected });
+    }
 }
