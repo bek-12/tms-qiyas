@@ -3,6 +3,7 @@ using Scalar.AspNetCore;
 using Microsoft.EntityFrameworkCore;
 using TmsApi.Data;
 using TmsApi.Entities;
+using TmsApi.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -13,14 +14,13 @@ builder.Services.AddAuthorization();
 builder.Services.AddProblemDetails();
 builder.Services.AddControllers();
 builder.Services.AddOpenApi();
+builder.Services.AddScoped<ICourseService, CourseService>();
+builder.Services.AddScoped<IEnrollmentService, EnrollmentService>();
 
 builder.Services.AddDbContext<TmsDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("TmsDatabase"))
         .LogTo(Console.WriteLine, LogLevel.Information)
         .EnableSensitiveDataLogging());
-
-builder.Services.AddSingleton<EnrollmentWorker>();
-builder.Services.AddSingleton<IEnrollmentService, EnrollmentService>();
 
 builder.Services.AddOptions<PaymentOptions>()
     .BindConfiguration("Payments")
@@ -54,9 +54,9 @@ using (var scope = app.Services.CreateScope())
 
         var courses = new List<Course>
         {
-            new() { Code = "CS-101", Title = "Introduction to Computer Science", Capacity = 30 },
-            new() { Code = "CS-201", Title = "Data Structures and Algorithms", Capacity = 25 },
-            new() { Code = "MAT-101", Title = "Calculus I", Capacity = 40 }
+            new() { Code = "CS-101", Title = "Introduction to Computer Science", MaxCapacity = 30 },
+            new() { Code = "CS-201", Title = "Data Structures and Algorithms", MaxCapacity = 25 },
+            new() { Code = "MAT-101", Title = "Calculus I", MaxCapacity = 40 }
         };
         context.Courses.AddRange(courses);
         context.SaveChanges();
@@ -88,11 +88,6 @@ if (app.Environment.IsDevelopment())
     app.MapScalarApiReference();
 }
 
-app.MapGet("/api/enrollments/worker-smoke", (EnrollmentWorker worker) =>
-{
-    worker.ProcessBatch();
-    return Results.Ok("processed");
-});
 
 app.MapGet("/api/assessments/results", () => Results.Ok(new
 {
@@ -101,11 +96,6 @@ app.MapGet("/api/assessments/results", () => Results.Ok(new
     letterGrade = "A"
 }))
 .RequireAuthorization();
-
-app.MapGet("/api/error", () =>
-{
-    throw new TmsDatabaseException("Simulated database failure for ProblemDetails testing");
-});
 
 app.MapGet("/api/error", () =>
 {
