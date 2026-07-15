@@ -15,7 +15,7 @@ public class EnrollmentsController(ICourseService courseService, IEnrollmentServ
     [HttpGet(Name = "ListCourseEnrollments")]
     [ProducesResponseType(typeof(IReadOnlyList<EnrollmentResponseDto>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
-    [EndpointSummary("List enrolments for a course")]
+    [EndpointSummary("List enrollments for a course")]
     public async Task<IActionResult> GetEnrollments(int courseId, CancellationToken ct)
     {
         var course = await courseService.GetByIdAsync(courseId, ct);
@@ -30,7 +30,7 @@ public class EnrollmentsController(ICourseService courseService, IEnrollmentServ
     [HttpGet("{id:int}", Name = nameof(GetEnrollment))]
     [ProducesResponseType(typeof(EnrollmentResponseDto), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
-    [EndpointSummary("Get one enrolment for a course")]
+    [EndpointSummary("Get one enrollment for a course")]
     public async Task<IActionResult> GetEnrollment(int courseId, int id, CancellationToken ct)
     {
         var enrollment = await enrollmentService.GetByIdAsync(courseId, id, ct);

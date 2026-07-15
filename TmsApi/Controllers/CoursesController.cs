@@ -49,8 +49,8 @@ public class CoursesController(ICourseService courseService, LinkGenerator linkG
         };
 
         return Ok(detail);
-    }
-
+    } 
+    
     [HttpGet]
     [ProducesResponseType(typeof(PagedResponse<CourseResponseDto>), StatusCodes.Status200OK)]
     [EndpointSummary("List courses with pagination")]

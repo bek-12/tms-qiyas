@@ -21,6 +21,7 @@ builder.Services.AddControllers(options =>
 
 builder.Services.AddOpenApi();
 builder.Services.AddScoped<ICourseService, CourseService>();
+builder.Services.AddScoped<IStudentService, StudentService>();
 builder.Services.AddScoped<IEnrollmentService, EnrollmentService>();
 
 builder.Services.AddDbContext<TmsDbContext>(options =>
